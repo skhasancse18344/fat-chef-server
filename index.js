@@ -22,6 +22,13 @@ async function run() {
     const serviceCollection = client.db("fatChef").collection("services");
     const reviewCollection = client.db("fatChef").collection("reviews");
 
+    //Add Services
+    app.post("/services", async (req, res) => {
+      const service = req.body;
+      const result = await serviceCollection.insertOne(service);
+      res.send(result);
+    });
+
     app.get("/servicesFeature", async (req, res) => {
       const query = {};
       const cursor = serviceCollection.find(query).limit(3);
