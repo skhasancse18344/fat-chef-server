@@ -21,12 +21,12 @@ const client = new MongoClient(uri, {
 function verifyJWT(req, res, next) {
   const authHeader = req.headers.authorization;
   if (!authHeader) {
-    res.status(401).send({ message: "Unauthorized access" });
+    return res.status(401).send({ message: "Unauthorized access" });
   }
   const token = authHeader.split(" ")[1];
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, function (err, decoded) {
     if (err) {
-      res.status(401).send({ message: "unauthorized Access" });
+      return res.status(401).send({ message: "unauthorized Access" });
     }
     req.decoded = decoded;
     next();
@@ -94,7 +94,7 @@ async function run() {
     app.get("/myReviews", verifyJWT, async (req, res) => {
       const decoded = req.decoded;
       if (decoded.email !== req.query.email) {
-        res.send({ message: "unauthorized access" });
+        res.status(403).send({ message: "unauthorized access" });
       }
       let query = {};
       if (req.query.email) {
